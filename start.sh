@@ -48,12 +48,18 @@ else
     echo "[]" > /app/data/generated/starred_gen.yaml
 fi
 
+# Create writable directories for Hugo resources/cache
+mkdir -p /app/data/hugo/resources /app/data/hugo/cache
+
 # Ensure proper ownership for data directory
 chown -R cloudron:cloudron /app/data
 
 echo "==> Starting application server"
 cd /app/code
-exec gosu cloudron:cloudron /app/pkg/ps-proxy \
+exec gosu cloudron:cloudron env \
+    HUGO_RESOURCEDIR=/app/data/hugo/resources \
+    HUGO_CACHEDIR=/app/data/hugo/cache \
+    /app/pkg/ps-proxy \
     -laddr="0.0.0.0:8000" \
     -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313 --noBuildLock --renderToMemory' \
     -surl='http://127.0.0.1:1313/' \
