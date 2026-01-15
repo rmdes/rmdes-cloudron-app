@@ -34,7 +34,7 @@ source /app/data/env.sh
 
 echo "==> Generating projects data"
 if [[ -n "${FORGE_TOKENS:-}" ]] && [[ "${FORGE_TOKENS}" != '{"github.com": ""}' ]]; then
-    /app/pkg/ps-gen-projects -projects /app/code/data/projects.yaml > /app/data/generated/projects_gen.yaml 2>&1 || echo "Warning: Failed to generate projects"
+    /app/pkg/ps-gen-projects -projects /app/code/data/projects.yaml 2>/dev/null > /app/data/generated/projects_gen.yaml || echo "Warning: Failed to generate projects"
 else
     echo "Warning: FORGE_TOKENS not configured, skipping projects generation"
     echo "[]" > /app/data/generated/projects_gen.yaml
@@ -42,7 +42,7 @@ fi
 
 echo "==> Generating starred repos data"
 if [[ -n "${FORGE_TOKENS:-}" ]] && [[ "${FORGE_TOKENS}" != '{"github.com": ""}' ]]; then
-    /app/pkg/ps-gen-starred -username "${GITHUB_USERNAME:-rmdes}" -limit 30 > /app/data/generated/starred_gen.yaml 2>&1 || echo "Warning: Failed to generate starred repos"
+    /app/pkg/ps-gen-starred -username "${GITHUB_USERNAME:-rmdes}" -limit 30 2>/dev/null > /app/data/generated/starred_gen.yaml || echo "Warning: Failed to generate starred repos"
 else
     echo "Warning: FORGE_TOKENS not configured, skipping starred repos generation"
     echo "[]" > /app/data/generated/starred_gen.yaml
