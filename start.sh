@@ -61,9 +61,14 @@ mkdir -p /app/data/hugo/public /app/data/hugo/resources /app/data/hugo/cache
 
 echo "==> Starting application server"
 cd /app/code
-exec gosu cloudron:cloudron /app/pkg/ps-proxy \
+export HUGO_RESOURCEDIR=/app/data/hugo/resources
+export HUGO_CACHEDIR=/app/data/hugo/cache
+exec gosu cloudron:cloudron env \
+    HUGO_RESOURCEDIR=/app/data/hugo/resources \
+    HUGO_CACHEDIR=/app/data/hugo/cache \
+    /app/pkg/ps-proxy \
     -laddr="0.0.0.0:8000" \
-    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313 --noBuildLock --destination=/app/data/hugo/public --resourceDir=/app/data/hugo/resources --cacheDir=/app/data/hugo/cache' \
+    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313 --noBuildLock --renderToMemory' \
     -surl='http://127.0.0.1:1313/' \
     -acmd='/app/pkg/ps-api' \
     -aurl='http://127.0.0.1:1314/'
