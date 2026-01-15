@@ -1,0 +1,26 @@
+{
+  "id": "net.rmendes.cloudronapp",
+  "title": "rmendes.net",
+  "author": "Ricardo Mendes",
+  "description": "file://DESCRIPTION.md",
+  "tagline": "Personal website and portfolio",
+  "version": "1.0.0",
+  "healthCheckPath": "/",
+  "httpPort": 8080,
+  "memoryLimit": 268435456,
+  "addons": {
+    "localstorage": {}
+  },
+  "postInstallMessage": "file://POSTINSTALL.md",
+  "manifestVersion": 2,
+  "website": "https://rmendes.net",
+  "contactEmail": "ricardo@rmendes.net",
+  "icon": "file://logo.png",
+  "tags": [
+    "portfolio",
+    "personal",
+    "hugo",
+    "blog"
+  ],
+  "minBoxVersion": "7.0.0"
+}

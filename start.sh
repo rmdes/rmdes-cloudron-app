@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -eu
+
+echo "==> Setting up directories"
+mkdir -p /app/data/generated
+
+# Link generated data to Hugo data directory
+ln -sf /app/data/generated/projects_gen.yaml /app/code/data/projects_gen.yaml 2>/dev/null || true
+ln -sf /app/data/generated/starred_gen.yaml /app/code/data/starred_gen.yaml 2>/dev/null || true
+
+# Create env config file on first run
+if [[ ! -f /app/data/env.sh ]]; then
+    echo "==> Creating default configuration"
+    cat > /app/data/env.sh << 'ENVEOF'
+# API Tokens for external services
+# Edit these values and restart the app
+
+# GitHub token (for projects and starred repos)
+# Create at: https://github.com/settings/tokens
+export FORGE_TOKENS='{"github.com": ""}'
+
+# GitHub username for starred repos
+export GITHUB_USERNAME="rmdes"
+
+# Bluesky credentials (optional, for feed)
+export BLUESKY_IDENTIFIER=""
+export BLUESKY_APP_PASSWORD=""
+
+# Mastodon credentials (optional, for feed)
+export MASTODON_ACCESS_TOKEN=""
+export MASTODON_INSTANCE=""
+ENVEOF
+fi
+
+# Load environment configuration
+source /app/data/env.sh
+
+echo "==> Generating projects data"
+if [[ -n "${FORGE_TOKENS:-}" ]] && [[ "${FORGE_TOKENS}" != '{"github.com": ""}' ]]; then
+    /app/pkg/ps-gen-projects -projects /app/code/data/projects.yaml 2>/dev/null > /app/data/generated/projects_gen.yaml || echo "Warning: Failed to generate projects"
+else
+    echo "Warning: FORGE_TOKENS not configured, skipping projects generation"
+    # Create empty file to prevent errors
+    echo "[]" > /app/data/generated/projects_gen.yaml
+fi
+
+echo "==> Generating starred repos data"
+if [[ -n "${FORGE_TOKENS:-}" ]] && [[ "${FORGE_TOKENS}" != '{"github.com": ""}' ]]; then
+    /app/pkg/ps-gen-starred -username "${GITHUB_USERNAME:-rmdes}" -limit 30 2>/dev/null > /app/data/generated/starred_gen.yaml || echo "Warning: Failed to generate starred repos"
+else
+    echo "Warning: FORGE_TOKENS not configured, skipping starred repos generation"
+    echo "[]" > /app/data/generated/starred_gen.yaml
+fi
+
+# Ensure proper ownership
+chown -R cloudron:cloudron /app/data
+chown -R cloudron:cloudron /app/code
+
+echo "==> Starting application server"
+cd /app/code
+exec gosu cloudron:cloudron /app/pkg/ps-proxy \
+    -laddr="0.0.0.0:8080" \
+    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313' \
+    -surl='http://127.0.0.1:1313/' \
+    -acmd='/app/pkg/ps-api' \
+    -aurl='http://127.0.0.1:1314/'
