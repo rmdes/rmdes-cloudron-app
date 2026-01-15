@@ -59,8 +59,8 @@ chown -R cloudron:cloudron /app/data
 echo "==> Starting application server"
 cd /app/code
 exec gosu cloudron:cloudron /app/pkg/ps-proxy \
-    -laddr="0.0.0.0:8080" \
-    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313' \
+    -laddr="0.0.0.0:8000" \
+    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313 --noBuildLock' \
     -surl='http://127.0.0.1:1313/' \
     -acmd='/app/pkg/ps-api' \
     -aurl='http://127.0.0.1:1314/'

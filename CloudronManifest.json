@@ -6,7 +6,7 @@
   "tagline": "Personal website and portfolio",
   "version": "1.0.0",
   "healthCheckPath": "/",
-  "httpPort": 8080,
+  "httpPort": 8000,
   "memoryLimit": 268435456,
   "addons": {
     "localstorage": {}
