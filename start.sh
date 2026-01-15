@@ -53,9 +53,8 @@ else
     echo "[]" > /app/data/generated/starred_gen.yaml
 fi
 
-# Ensure proper ownership
+# Ensure proper ownership for data directory
 chown -R cloudron:cloudron /app/data
-chown -R cloudron:cloudron /app/code
 
 echo "==> Starting application server"
 cd /app/code

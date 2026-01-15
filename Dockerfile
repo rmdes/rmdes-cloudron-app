@@ -48,4 +48,7 @@ RUN chmod +x /app/pkg/start.sh
 # Clean up build dependencies to reduce image size
 RUN rm -rf /usr/local/go node_modules/.cache
 
+# Set ownership at build time for faster startup
+RUN chown -R cloudron:cloudron /app/code /app/pkg
+
 CMD [ "/app/pkg/start.sh" ]
