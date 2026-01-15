@@ -48,11 +48,6 @@ RUN chmod +x /app/pkg/start.sh
 # Clean up build dependencies to reduce image size
 RUN rm -rf /usr/local/go node_modules/.cache
 
-# Create symlinks for generated data files (points to /app/data which is writable at runtime)
-RUN mkdir -p /app/data/generated && \
-    ln -sf /app/data/generated/projects_gen.yaml /app/code/data/projects_gen.yaml && \
-    ln -sf /app/data/generated/starred_gen.yaml /app/code/data/starred_gen.yaml
-
 # Set ownership at build time for faster startup
 RUN chown -R cloudron:cloudron /app/code /app/pkg
 
