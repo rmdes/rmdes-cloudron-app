@@ -111,11 +111,12 @@ fi
 # Ensure proper ownership
 chown -R cloudron:cloudron /app/data
 
-echo "==> Starting application server"
+echo "==> Starting application server (production mode)"
 cd /app/data/site
 exec gosu cloudron:cloudron /app/pkg/ps-proxy \
     -laddr="0.0.0.0:8000" \
-    -scmd='hugo server --baseURL=/ --appendPort=false --bind=127.0.0.1 --port=1313' \
-    -surl='http://127.0.0.1:1313/' \
+    -sitedir="/app/data/site" \
+    -publicdir="public" \
+    -contentdir="content" \
     -acmd='/app/pkg/ps-api' \
     -aurl='http://127.0.0.1:1314/'
