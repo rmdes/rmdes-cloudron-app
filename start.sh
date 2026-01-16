@@ -12,7 +12,10 @@ fi
 
 # Always sync latest code (preserves generated data files)
 echo "==> Syncing code updates"
-rsync -a --exclude='data/projects_gen.yaml' --exclude='data/starred_gen.yaml' /app/code/ /app/data/site/
+rsync -a --exclude='data/projects_gen.yaml' --exclude='data/starred_gen.yaml' \
+    --exclude='content/notes/*.md' --exclude='content/likes/*.md' \
+    --exclude='content/bookmarks/*.md' --exclude='content/reposts/*.md' \
+    /app/code/ /app/data/site/
 
 # Create env config file on first run
 if [[ ! -f /app/data/env.sh ]]; then
@@ -42,6 +45,20 @@ export BLUESKY_APP_PASSWORD=""
 # Mastodon credentials (optional, for feed)
 export MASTODON_ACCESS_TOKEN=""
 export MASTODON_INSTANCE=""
+
+# IndieWeb configuration (optional)
+# Webmention.io token for receiving webmentions
+# Get at: https://webmention.io/settings
+export WEBMENTION_IO_TOKEN=""
+
+# IndieAuth identity URL (your site URL)
+export INDIEAUTH_ME="https://rmendes.net/"
+
+# IndieAuth token endpoint (default: https://tokens.indieauth.com/token)
+export INDIEAUTH_TOKEN_ENDPOINT=""
+
+# Site base URL for Micropub endpoint
+export SITE_BASE_URL="https://rmendes.net"
 ENVEOF
 fi
 
