@@ -12,7 +12,7 @@ RUN curl -L https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz | tar -C /usr/l
 
 # Clone the application source
 # Change CACHE_BUST value to force fresh clone (e.g., date or commit hash)
-ARG CACHE_BUST=8
+ARG CACHE_BUST=9
 ARG APP_VERSION=main
 RUN git clone --depth 1 --branch ${APP_VERSION} https://github.com/rmdes/rmdes-static-hugo.git /build/site && \
     rm -rf /build/site/.git
